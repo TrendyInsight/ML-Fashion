@@ -4,8 +4,7 @@ from PIL import Image, ImageTk
 import numpy as np
 from tensorflow.keras.models import load_model
 
-# Load the pre-trained model
-model = load_model('model.h5')
+
 
 # Define class names
 names_info = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
@@ -19,6 +18,9 @@ def preprocess_image(file_path):
     img_array = img_array / 255.0  # Normalize
     img_array = np.reshape(img_array, (1, 28, 28))  # Reshape for model input
     return img_array
+
+# Load the pre-trained model
+model = load_model('model.h5')
 
 # Function to make a prediction and update the result label
 def predict_image(file_path):

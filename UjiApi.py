@@ -1,16 +1,29 @@
 import requests
+import base64
+from PIL import Image
 import json
 
-url = "http://127.0.0.1:5000/predict"  # Ganti dengan URL API Anda
+# Load an example image for testing
+image_path = "C:/Users/param/OneDrive/Dokumen/Gum/dataset/images_compressed/1d887da7-8102-488b-b0f0-ff8c9d507926.jpg"
 
-# Contoh data gambar dalam bentuk base64 (atau sesuaikan dengan format yang diterima oleh API Anda)
-image_data = "base64_encoded_image_data"
+# Convert the image to base64 encoding
+with open(image_path, "rb") as image_file:
+    encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
-data = {"image": image_data}
+# Prepare the request payload
+payload = {"image": encoded_image}
+headers = {"Content-Type": "application/json"}
 
-# Mengirim permintaan POST ke API
-response = requests.post(url, json=data)
+# Make a POST request to the Flask server
+response = requests.post("http://127.0.0.1:5000/predict", json=payload, headers=headers)
 
-# Mendapatkan hasil prediksi dari respons
-result = json.loads(response.text)
-print(result)
+# Check the response
+if response.status_code == 200:
+    result = response.json()
+    if 'class' in result:  # Add this line to check if 'class' key is present
+        print("Predicted class:", result['class'])
+        print("Class name:", result['class_name'])
+    else:
+        print("Error: 'class' key not present in the response.")
+else:
+    print("Error:", response.status_code, response.text)
